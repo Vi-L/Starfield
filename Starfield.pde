@@ -1,5 +1,5 @@
 Particle[] parts = new Particle[250];
-ShootingStar star = new ShootingStar();
+ShootingStar[] stars = new ShootingStar[5];
 void setup()
 {
   background(0);
@@ -7,6 +7,9 @@ void setup()
   size(1000, 750);
   for (int i = 0; i < parts.length; i++) {
     parts[i] = new Particle();
+  }
+  for (int i = 0; i < stars.length; i++) {
+    stars[i] = new ShootingStar();
   }
 }
 void draw()
@@ -25,8 +28,11 @@ void draw()
     parts[i].show();
   }
   
-  star.move();
-  star.show();
+  for (int i = 0; i < stars.length; i++) {
+    // stars[i].move();
+    stars[i].checkBounds();
+    stars[i].show();
+  }
   
   fill(0, 128, 0);
   rect(0, 700, width, height); // ground
@@ -80,7 +86,7 @@ class Particle
     myY += mySpeed * Math.sin(myAngle);
   }
   void fall() {
-    // some ugly-looking math below to get gravity     
+    // math below makes gravity work
     // speed is Pythagorean theorem to get new speed based on vertical gravity
     // angle is arctan to get new angle based on vertical gravity
     boolean addPi = ( (myAngle > (Math.PI/2)) && (myAngle < (3*Math.PI/2)) ); // if the angle in is Quardrants II or III (i.e. facing left)
@@ -105,5 +111,18 @@ class ShootingStar extends Particle //inherits from Particle
     myAngle = (int)(Math.random() * 2 * Math.PI);
     myColor = color(255, 255, 0);
     mySize = 30;
+  }
+  
+  void checkBounds() {
+    if (myX < -400) myAngle = ( Math.random() * Math.PI - (Math.PI / 2) );
+    if (myX > width + 400) myAngle = ( Math.random() * Math.PI + (Math.PI / 2) );
+    
+    if (myY < -400) myAngle = ( Math.random() * Math.PI );
+    if (myY > height + 400) myAngle = ( Math.random() * Math.PI + Math.PI );
+  }
+  
+  void show() { // overwrite inherited show method
+    fill(myColor);
+    // TODO: show star instead of circle
   }
 }
