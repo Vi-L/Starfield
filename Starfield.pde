@@ -1,5 +1,4 @@
-Particle[] parts = new Particle[250];
-ShootingStar[] stars = new ShootingStar[5];
+Particle[] parts = new Particle[255]; // 250 particles, 5 stars
 void setup()
 {
   background(0);
@@ -8,14 +7,16 @@ void setup()
   for (int i = 0; i < parts.length; i++) {
     parts[i] = new Particle();
   }
-  for (int i = 0; i < stars.length; i++) {
-    stars[i] = new ShootingStar();
+  for (int i = 0; i < 5; i++) {
+    parts[i] = new ShootingStar();
   }
 }
 void draw()
 {
-  fill(0, 0, 0, 80); // sky
+  // sky
+  fill(0, 0, 0, 80); 
   rect(0, 0, width, height);
+  // moon
   fill(255, 255, 0);
   ellipse(100, 100, 80, 80);
   fill(0, 0, 0);
@@ -28,21 +29,16 @@ void draw()
     parts[i].show();
   }
   
-  for (int i = 0; i < stars.length; i++) {
-    // stars[i].move();
-    stars[i].checkBounds();
-    stars[i].show();
-  }
-  
+  // ground
   fill(0, 128, 0);
-  rect(0, 700, width, height); // ground
+  rect(0, 700, width, height); 
 }
 
 void mouseClicked() {
   fill(255);
-  ellipse(mouseX, mouseY, 30, 30); // flash at epicenter
+  ellipse(mouseX, mouseY, 30, 30); // "flash" at center
   
-  for (int i = 0; i < parts.length; i++) {
+  for (int i = 5; i < parts.length; i++) { // start at 5 so stars don't get reinitialized
     parts[i] = new Particle(mouseX, mouseY);
   }
 }
@@ -78,7 +74,7 @@ class Particle
     mySpeed = speed;
     myAngle = angle;
     myColor = colour; // "color" is a reserved keyword, but "colour" isn't
-    mySize = sz;
+    mySize = sz; // "sz" instead of "size"
   }
   
   void move() {
@@ -112,10 +108,21 @@ class ShootingStar extends Particle //inherits from Particle
     myColor = color(255, 255, 0);
     mySize = 30;
   }
+  ShootingStar(double x, double y) {
+    myGravity = 0;
+    myX = x;
+    myY = y;
+    mySpeed = 10;
+    myAngle = (int)(Math.random() * 2 * Math.PI);
+    myColor = color(255, 255, 0);
+    mySize = 30;
+  }
   
-  void checkBounds() {
+  // TODO: stars can come out of the ground, fix!
+  void fall() { // overwrite inherited fall method  
+    // change directions
     if (myX < -400) myAngle = ( Math.random() * Math.PI - (Math.PI / 2) );
-    if (myX > width + 400) myAngle = ( Math.random() * Math.PI + (Math.PI / 2) );
+    if (myX > width) myAngle = ( Math.random() * Math.PI + (Math.PI / 2) );
     
     if (myY < -400) myAngle = ( Math.random() * Math.PI );
     if (myY > height + 400) myAngle = ( Math.random() * Math.PI + Math.PI );
@@ -123,6 +130,8 @@ class ShootingStar extends Particle //inherits from Particle
   
   void show() { // overwrite inherited show method
     fill(myColor);
-    // TODO: show star instead of circle
+    // shows a star made of two triangles
+    triangle( (float)myX - mySize/1.5, (float)myY - mySize/1.5+10, (float)myX + mySize/1.5, (float)myY - mySize/1.5+10, (float)myX, (float)myY + mySize/1.5+10);
+    triangle( (float)myX - mySize/1.5, (float)myY + mySize/1.5-5, (float)myX + mySize/1.5, (float)myY + mySize/1.5-5, (float)myX, (float)myY - mySize/1.5-5);
   }
 }
