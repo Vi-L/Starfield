@@ -1,4 +1,4 @@
-Particle[] parts = new Particle[255]; // 250 particles, 5 stars
+Particle[] parts = new Particle[253]; // 250 particles, 3 stars
 void setup()
 {
   background(0);
@@ -7,7 +7,7 @@ void setup()
   for (int i = 0; i < parts.length; i++) {
     parts[i] = new Particle();
   }
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < 3; i++) {
     parts[i] = new ShootingStar();
   }
 }
@@ -38,7 +38,7 @@ void mouseClicked() {
   fill(255);
   ellipse(mouseX, mouseY, 30, 30); // "flash" at center
   
-  for (int i = 5; i < parts.length; i++) { // start at 5 so stars don't get reinitialized
+  for (int i = 3; i < parts.length; i++) { // start at 3 so stars don't get reinitialized
     parts[i] = new Particle(mouseX, mouseY);
   }
 }
@@ -118,14 +118,16 @@ class ShootingStar extends Particle //inherits from Particle
     mySize = 30;
   }
   
-  // TODO: stars can come out of the ground, fix!
   void fall() { // overwrite inherited fall method  
     // change directions
     if (myX < -400) myAngle = ( Math.random() * Math.PI - (Math.PI / 2) );
-    if (myX > width) myAngle = ( Math.random() * Math.PI + (Math.PI / 2) );
+    if (myX > width + 400) myAngle = ( Math.random() * Math.PI + (Math.PI / 2) );
     
     if (myY < -400) myAngle = ( Math.random() * Math.PI );
-    if (myY > height + 400) myAngle = ( Math.random() * Math.PI + Math.PI );
+    if (myY > height) {
+      myY = -100;
+      myAngle = ( Math.random() * Math.PI );
+    }
   }
   
   void show() { // overwrite inherited show method
